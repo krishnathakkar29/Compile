@@ -1,19 +1,27 @@
+import "./App.css";
+import Header from "./components/Header";
+import { Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
+import Home from "./pages/Home";
+import Compile from "./pages/Compile";
+import NotFound from "./pages/NotFound";
 
-import './App.css'
-import { Button } from "@/components/ui/button"
-
-//react split 
+//react split
 function App() {
-
   return (
     <>
-     <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
-    <Button size={"sm"} variant={"destructive"}>Button</Button>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <Header />
 
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/compiler" element={<Compile />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        
+      </ThemeProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
