@@ -11,9 +11,20 @@ export interface CompilerSliceStateType {
 
 const initialState: CompilerSliceStateType = {
   fullCode: {
-    html: "this is html code",
-    css: "this is css code",
-    javascript: "this is js code ",
+    html: `
+<html lang="en">
+  <body>
+    <div class="container">
+        <h1>Welcome to the Color Changer</h1>
+        <button id="colorButton">Change Background Color</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
+
+    `,
+    css: "",
+    javascript: "",
   },
   currentLanguage: "html",
 };
