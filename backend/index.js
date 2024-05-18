@@ -13,8 +13,10 @@ app.use(cors());
 config();
 
 import compilerRouter from "./routes/compiler.routes.js";
+import userRouter from "./routes/user.routes.js";
 
 app.use("/compiler", compilerRouter);
+app.use("/user", userRouter);
 
 connectDB();
 app.listen(PORT, () => {
