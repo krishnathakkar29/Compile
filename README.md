@@ -8,11 +8,11 @@ Fast Online in-browser IDE to craft stunning HTML, CSS, and JavaScript projects 
 ![My Skills](https://skillicons.dev/icons?i=react,ts,tailwind,mongodb,nodejs,express)
 
 - Frontend: React
-- UI Library: Shadcn library for crafting neat user interfaces
 - Backend Framework: Expressjs
 - Database: MongoDB
 - State Management: Redux Toolkit
 - API Integration: RTK Query
+- UI Library: Shadcn
 
 ## Key Features
 - **Real-Time Update:** Changes made to the code are reflected instantly in the preview section.
