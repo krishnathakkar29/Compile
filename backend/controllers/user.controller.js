@@ -22,7 +22,35 @@ const signup = async (req, res) => {
       password: hashedPassword,
       username: username,
     });
-    return res.status(201).send({ user });
+
+    const jwtToken = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    res.cookie("token", jwtToken, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+      httpOnly: true,
+      sameSite: "lax",
+    });
+
+
+
+    return res
+      .status(201)
+      .send({
+        username: user.username,
+        picture: user.picture,
+        email: user.email,
+        savedCodes: user.savedCodes,
+      });
   } catch (error) {
     return res.status(500).send({ message: "Error signing up!", error: error });
   }
@@ -69,14 +97,12 @@ const login = async (req, res) => {
       sameSite: "lax",
     });
 
-    return res
-      .status(200)
-      .send({
-        username: existingUser.username,
-        picture: existingUser.picture,
-        email: existingUser.email,
-        savedCodes: existingUser.savedCodes,
-      });
+    return res.status(200).send({
+      username: existingUser.username,
+      picture: existingUser.picture,
+      email: existingUser.email,
+      savedCodes: existingUser.savedCodes,
+    });
   } catch (error) {
     return res.status(500).send({ message: "Error log in!", error: error });
   }
@@ -91,7 +117,7 @@ const logout = async (req, res) => {
   }
 };
 
-const userDetails = async (req,res) => {
+const userDetails = async (req, res) => {
   const userId = req._id;
   try {
     const user = await User.findById(userId);
@@ -105,8 +131,10 @@ const userDetails = async (req,res) => {
       savedCodes: user.savedCodes,
     });
   } catch (error) {
-    return res.status(500).send({ message: "Cannot fetch user details!", error });
+    return res
+      .status(500)
+      .send({ message: "Cannot fetch user details!", error });
   }
-}
+};
 
 export { logout, login, signup, userDetails };

@@ -11,7 +11,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import "./PageStyles/grid.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSignupMutation } from "@/redux/slices/api";
+import { handleError } from "@/utils/handleError";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
+import { useDispatch } from "react-redux";
 
 //define the schema , for the fiel you eed in the field
 const formSchema = z.object({
@@ -21,6 +25,12 @@ const formSchema = z.object({
 });
 
 const Signup = () => {
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const [signup , {isLoading}] = useSignupMutation()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -30,10 +40,15 @@ const Signup = () => {
     },
   });
 
-  function handleSignUp(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function handleSignUp(values: z.infer<typeof formSchema>) {
+    try {
+      const response  = await signup(values).unwrap() 
+      dispatch(updateCurrentUser(response));
+      dispatch(updateIsLoggedIn(true));
+      navigate("/");
+    } catch (error) {
+      handleError(error)
+    }
   }
   return (
     <div className="signup grid-bg w-full h-[calc(100vh-60px)] flex items-center justify-center flex-col gap-2">
@@ -53,7 +68,7 @@ const Signup = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Username" {...field} />
+                    <Input disabled={isLoading} placeholder="Username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -65,7 +80,7 @@ const Signup = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
+                    <Input disabled={isLoading} type="email" placeholder="Email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -77,13 +92,13 @@ const Signup = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input disabled={isLoading} type="password" placeholder="Password" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button loading={isLoading} className="w-full" type="submit">
               Signup
             </Button>
           </form>

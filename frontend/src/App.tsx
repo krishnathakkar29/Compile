@@ -1,17 +1,19 @@
+import { Suspense, lazy, useEffect } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import { Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import Home from "./pages/Home";
-import Compile from "./pages/Compile";
-import NotFound from "./pages/NotFound";
 import { Toaster } from "sonner";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import { useGetUserDetailsQuery } from "./redux/slices/api";
-import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { updateCurrentUser, updateIsLoggedIn } from "./redux/slices/appSlice";
+import { Loader } from "lucide-react";
+
+const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Compile = lazy(() => import("./pages/Compile"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 //react split
 function App() {
@@ -33,14 +35,22 @@ function App() {
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Header />
 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/compiler/:urlId?" element={<Compile />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+        <Suspense
+          fallback={
+            <div className="w-full h-[calc(100vh-60px)] flex justify-center items-center">
+              <Loader />
+            </div>
+          }
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/compiler/:urlId?" element={<Compile />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </ThemeProvider>
     </>
   );
