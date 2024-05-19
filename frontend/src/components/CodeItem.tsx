@@ -3,7 +3,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { useDeleteCodeMutation } from "@/redux/slices/api";
@@ -13,7 +13,13 @@ import { Code, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 
-const CodeItem = ({ data }: { data: codeType }) => {
+const CodeItem = ({
+  data,
+  deleteBtn,
+}: {
+  data: codeType;
+  deleteBtn: boolean;
+}) => {
   const [deleteCode, { isLoading }] = useDeleteCodeMutation();
 
   const handleDelete = async () => {
@@ -36,38 +42,40 @@ const CodeItem = ({ data }: { data: codeType }) => {
         <Link target="_blank" to={`/compiler/${data._id}`}>
           <Button variant="secondary">Open Code</Button>
         </Link>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant="destructive"
-              // onClick={handleSaveCode}
-              disabled={false}
-            >
-              Delete
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex gap-1 items-center justify-center">
-                {" "}
-                <Trash2 /> Delete Code Confirmation
-              </DialogTitle>
-              {/* <DialogDescription className="flex flex-col gap-2"> */}
-              <div className="flex gap-2 items-center justify-center flex-col ">
-                <p>Are you sure , that you want to delete this code? </p>
-                <Button
-                  variant="destructive"
-                  onClick={handleDelete}
-                  className="h-full"
-                  loading={isLoading}
-                >
-                  Confirm Delete
-                </Button>
-              </div>
-              {/* </DialogDescription> */}
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        {deleteBtn && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="destructive"
+                // onClick={handleSaveCode}
+                disabled={false}
+              >
+                Delete
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="flex gap-1 items-center justify-center">
+                  {" "}
+                  <Trash2 /> Delete Code Confirmation
+                </DialogTitle>
+                {/* <DialogDescription className="flex flex-col gap-2"> */}
+                <div className="flex gap-2 items-center justify-center flex-col ">
+                  <p>Are you sure , that you want to delete this code? </p>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDelete}
+                    className="h-full"
+                    loading={isLoading}
+                  >
+                    Confirm Delete
+                  </Button>
+                </div>
+                {/* </DialogDescription> */}
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ export const api = createApi({
     baseUrl: "http://localhost:3000",
     credentials: "include", //to include the cookies as well
   }),
-  tagTypes: ["myCodes", "auth"],
+  tagTypes: ["myCodes", "allCodes"],
   endpoints: (builder) => ({
     //just define the type of the output and the arguments that i am getting
     saveCode: builder.mutation<{ url: string; status: string }, codeType>({
@@ -23,7 +23,7 @@ export const api = createApi({
           body: body,
         };
       },
-      invalidatesTags: ["myCodes"], //reset the cache of this endpoint
+      invalidatesTags: ["myCodes", "allCodes"], //reset the cache of this endpoint
     }),
     loadCode: builder.mutation<
       { fullCode: CompilerSliceStateType["fullCode"]; isOwner: boolean },
@@ -34,7 +34,6 @@ export const api = createApi({
         method: "POST",
         body: body,
       }),
-      // providesTags: ["auth"]
     }),
     login: builder.mutation<userInfoType, loginCredentialsType>({
       query: (body) => ({
@@ -56,7 +55,6 @@ export const api = createApi({
         url: "/user/logout",
         method: "POST",
       }),
-      // invalidatesTags: ["auth"]
     }),
     getUserDetails: builder.query<userInfoType, void>({
       query: () => ({ url: "/user/user-details", cache: "no-store" }),
@@ -70,16 +68,30 @@ export const api = createApi({
         url: `/compiler/delete/${_id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["myCodes"],
+      invalidatesTags: ["myCodes", "allCodes"],
     }),
 
-    editCode: builder.mutation<void , {fullCode: CompilerSliceStateType["fullCode"]; id:string}>({
-      query: ({id,fullCode}) => ({
-        url:`/compiler/edit/${id}`,
+    editCode: builder.mutation<
+      void,
+      { fullCode: CompilerSliceStateType["fullCode"]; id: string }
+    >({
+      query: ({ id, fullCode }) => ({
+        url: `/compiler/edit/${id}`,
         method: "PUT",
-        body: fullCode
-      })
-    })
+        body: fullCode,
+      }),
+    }),
+
+    getAllCodes: builder.query<
+      Array<{ _id: string; title: string; ownerName: string }>,
+      void
+    >({
+      query: () => ({
+        url: "/compiler/get-all-codes",
+        cache: "no-store",
+      }),
+      providesTags: ["allCodes"],
+    }),
   }),
 });
 
@@ -92,5 +104,6 @@ export const {
   useGetUserDetailsQuery,
   useGetMyCodesQuery,
   useDeleteCodeMutation,
-  useEditCodeMutation
+  useEditCodeMutation,
+  useGetAllCodesQuery
 } = api;

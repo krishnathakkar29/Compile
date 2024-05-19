@@ -136,4 +136,14 @@ const editCode = async (req, res) => {
     return res.status(500).send({ message: "Error editing code!", error });
   }
 };
-export { loadCode, saveCode, deleteCode, editCode };
+
+const getAllCodes = async (req, res) => {
+  try {
+    const allCodes = await Code.find().sort({ createdAt: -1 });
+    return res.status(200).send(allCodes);
+  } catch (error) {
+    return res.status(500).send({ message: "Error editing code!", error });
+  }
+};
+
+export { loadCode, saveCode, deleteCode, editCode, getAllCodes };
