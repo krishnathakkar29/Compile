@@ -8,12 +8,28 @@ import NotFound from "./pages/NotFound";
 import { Toaster } from "sonner";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import { useGetUserDetailsQuery } from "./redux/slices/api";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { updateCurrentUser, updateIsLoggedIn } from "./redux/slices/appSlice";
 
 //react split
 function App() {
+  const { data, error } = useGetUserDetailsQuery();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(updateCurrentUser(data));
+      dispatch(updateIsLoggedIn(true));
+    } else if (error) {
+      dispatch(updateCurrentUser({}));
+      dispatch(updateIsLoggedIn(false));
+    }
+  }, [data, error]);
   return (
     <>
-    <Toaster position="bottom-right" theme="dark" />
+      <Toaster position="bottom-right" theme="dark" />
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Header />
 
@@ -25,7 +41,6 @@ function App() {
 
           <Route path="*" element={<NotFound />} />
         </Routes>
-        
       </ThemeProvider>
     </>
   );
