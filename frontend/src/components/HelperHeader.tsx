@@ -84,9 +84,11 @@ const HelperHeader = () => {
 
         {shareBtn && (
           <Dialog>
-            <DialogTrigger className="whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-4 py-2 flex justify-center items-center gap-1">
-              <Share2 size={16} />
-              Share
+            <DialogTrigger asChild>
+              <Button variant='secondary'>
+                <Share2 size={16} />
+                Share
+              </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>

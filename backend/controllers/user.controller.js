@@ -69,7 +69,14 @@ const login = async (req, res) => {
       sameSite: "lax",
     });
 
-    return res.status(200).send({ existingUser });
+    return res
+      .status(200)
+      .send({
+        username: existingUser.username,
+        picture: existingUser.picture,
+        email: existingUser.email,
+        savedCodes: existingUser.savedCodes,
+      });
   } catch (error) {
     return res.status(500).send({ message: "Error log in!", error: error });
   }
@@ -84,4 +91,22 @@ const logout = async (req, res) => {
   }
 };
 
-export { logout, login, signup };
+const userDetails = async (req,res) => {
+  const userId = req._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "Cannot find the user!" });
+    }
+    return res.status(200).send({
+      username: user.username,
+      picture: user.picture,
+      email: user.email,
+      savedCodes: user.savedCodes,
+    });
+  } catch (error) {
+    return res.status(500).send({ message: "Cannot fetch user details!", error });
+  }
+}
+
+export { logout, login, signup, userDetails };

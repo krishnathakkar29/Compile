@@ -9,9 +9,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginMutation } from "@/redux/slices/api";
+import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
+import { handleError } from "@/utils/handleError";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 //define the schema , for the fiel you eed in the field
@@ -22,6 +26,10 @@ const formSchema = z.object({
 
 //Ennteing thed default values else uncontrolled
 const Login = () => {
+  const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,11 +37,17 @@ const Login = () => {
       password: "",
     },
   });
-  function handleLogin(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function handleLogin(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await login(values).unwrap();
+      dispatch(updateCurrentUser(response));
+      dispatch(updateIsLoggedIn(true));
+      navigate("/");
+    } catch (error) {
+      handleError(error);
+    }
   }
+
   return (
     <div className="login grid-bg w-full h-[calc(100vh-60px)] flex items-center justify-center flex-col gap-2">
       <div className="form_container bg-black border-[1px] py-8 px-4 flex flex-col gap-5 min-w-[300px]">
@@ -52,7 +66,12 @@ const Login = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Username or Email" {...field} />
+                    <Input
+                      required
+                      disabled={isLoading}
+                      placeholder="Username or Email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -64,13 +83,19 @@ const Login = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <Input
+                      required
+                      type="password"
+                      disabled={isLoading}
+                      placeholder="Password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button loading={isLoading} className="w-full" type="submit">
               Login
             </Button>
           </form>
