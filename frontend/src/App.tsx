@@ -14,6 +14,8 @@ const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const Compile = lazy(() => import("./pages/Compile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AllCodes = lazy(() => import("./pages/AllCodes"));
+const MyCodes = lazy(() => import("./pages/MyCodes"));
 
 //react split
 function App() {
@@ -47,6 +49,8 @@ function App() {
             <Route path="/compiler/:urlId?" element={<Compile />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/all-codes" element={<AllCodes />} />
+            <Route path="/my-codes" element={<MyCodes />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

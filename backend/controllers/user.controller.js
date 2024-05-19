@@ -41,16 +41,12 @@ const signup = async (req, res) => {
       sameSite: "lax",
     });
 
-
-
-    return res
-      .status(201)
-      .send({
-        username: user.username,
-        picture: user.picture,
-        email: user.email,
-        savedCodes: user.savedCodes,
-      });
+    return res.status(201).send({
+      username: user.username,
+      picture: user.picture,
+      email: user.email,
+      savedCodes: user.savedCodes,
+    });
   } catch (error) {
     return res.status(500).send({ message: "Error signing up!", error: error });
   }
@@ -137,4 +133,22 @@ const userDetails = async (req, res) => {
   }
 };
 
-export { logout, login, signup, userDetails };
+const getMyCodes = async (req, res) => {
+  const userId = req._id;
+  try {
+    const user = await User.findById(userId).populate({
+      path: "savedCodes",
+      options: { sort: { createdAt: -1 } },
+    });
+
+    if (!user) {
+      return res.status(404).send({ message: "Cannot find the user!" });
+    }
+
+    return res.status(200).send(user.savedCodes);
+  } catch (error) {
+    return res.status(500).send({ message: "Error loading my codes!", error });
+  }
+};
+
+export { logout, login, signup, userDetails, getMyCodes };

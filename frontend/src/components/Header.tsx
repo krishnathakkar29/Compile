@@ -6,6 +6,7 @@ import { handleError } from "@/utils/handleError";
 import { useLogoutMutation } from "@/redux/slices/api";
 import { updateCurrentUser, updateIsLoggedIn } from "@/redux/slices/appSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { updateIsOwner } from "@/redux/slices/compilerSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const Header = () => {
       await logout().unwrap();
       dispatch(updateIsLoggedIn(false));
       dispatch(updateCurrentUser({}));
+      dispatch(updateIsOwner(false));
     } catch (error) {
       handleError(error);
     }
@@ -38,11 +40,25 @@ const Header = () => {
       <ul className="flex gap-2">
         <li>
           <Link to="/compiler">
-            <Button variant="secondary">Compiler</Button>
+            <Button variant="link">Compiler</Button>
+          </Link>
+        </li>
+        <li>
+          <Link to="/all-codes">
+            <Button loading={isLoading} variant="link">
+              All Codes
+            </Button>
           </Link>
         </li>
         {isLoggedIn ? (
           <>
+            <li>
+              <Link to="/my-codes">
+                <Button loading={isLoading} variant="blue">
+                  My Codes
+                </Button>
+              </Link>
+            </li>
             <li>
               <Button
                 loading={isLoading}

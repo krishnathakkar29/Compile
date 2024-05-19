@@ -7,6 +7,17 @@ const codeSchema = new mongoose.Schema(
       css: String,
       javascript: String,
     },
+    title:{
+      type:String,
+      required: true
+    },
+    ownerName: {
+      type: String
+    },
+    ownerInfo:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"User"
+    },
   },
   {
     timestamps: true,
