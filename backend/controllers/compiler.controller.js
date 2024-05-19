@@ -2,7 +2,11 @@ import { Code } from "../models/code.model.js";
 
 const saveCode = async (req,res) => {
   try {
-    const { fullCode } = req.body;
+    const  fullCode  = req.body;
+
+    if(!fullCode.html && !fullCode.css && !fullCode.javascript){
+      return res.status(400).send({message: "Code Cannot be Empty"})
+    }
 
     const newCode = await Code.create({
       fullCode: fullCode,

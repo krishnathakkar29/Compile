@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import Compile from "./pages/Compile";
 import NotFound from "./pages/NotFound";
 import { Toaster } from "sonner";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 //react split
 function App() {
@@ -17,8 +19,10 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/compiler" element={<Compile />} />
-          <Route path="/compiler/:urlId" element={<Compile />} />
+          <Route path="/compiler/:urlId?" element={<Compile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
         
